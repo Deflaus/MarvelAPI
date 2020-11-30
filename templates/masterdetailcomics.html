@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ comic.title }}
+{% endblock title %}
+{% block content %}
+        <h1>{{ comic.title }}</h1>
+        <h3>Дата выхода:</h3>
+        <p>{{ comic.datetime_created }}</p>
+        {% if comic.description %}
+            <h3>Описание:</h3>
+            {{ comic.description }}
+        {% endif %}
+        {% if comic.variants %}
+            <h3>Варианты выпуска:</h3>
+            {% for i in comic.variants %}
+                <p>{{ i.name }}</p>
+            {% endfor %}
+        {% endif %}
+        <h3>Обложка:</h3>
+        <img src="{{ comic.thumbnail.url }}" height="300" alt="">
+        <h3>Изображения:</h3>
+        <ul>
+            {% for image in comic.images %}
+                <li>
+                    <img src="{{ image.url }}" height="200" alt="">
+                </li>
+            {% endfor %}
+        </ul>
+        <h3>Список персонажей в комиксе:</h3>
+        {% if comic.characters.items %}
+            <ul>
+                {% for character in comic.characters %}
+                    <li>
+                        {{character}}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Нет информации</p>
+        {% endif %}
+        <h3>Stories:</h3>
+        <ul>
+            {% for storie in comic.stories %}
+                <li>
+                    {{storie}}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url "deletecomic" comic.id %}"><button>Удалить из избранного</button></a>
+{% endblock content %}

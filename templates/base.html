@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <div class="header">
+            <ul class="">
+                <li>
+                    <a href="{% url "marvel" %}">
+                        Поиск комиксов
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url "master" %}">
+                        Избранные комиксы
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+          {% block content %}
+          {% endblock %}
+        </div>
+    </body>
+</html>

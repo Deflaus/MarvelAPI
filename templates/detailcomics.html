@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ comic.title }}
+{% endblock title %}
+{% block content %}
+        <h1>{{ comic.title }}</h1>
+        <h3>Дата выхода:</h3>
+        <p>{{ comic.dates.0.date }}</p>
+        {% if comic.description %}
+            <h3>Описание:</h3>
+            {{ comic.description }}
+        {% endif %}
+        {% if comic.variants %}
+            <h3>Варианты выпуска:</h3>
+            {% for i in comic.variants %}
+                <p>{{ i.name }}</p>
+            {% endfor %}
+        {% endif %}
+        <h3>Обложка:</h3>
+        <img src="{{comic.thumbnail.path}}.{{comic.thumbnail.extension}}" height="300" alt="">
+        <h3>Изображения:</h3>
+        <ul>
+            {% for i in comic.images %}
+                <li>
+                    <img src="{{i.path}}.{{i.extension}}" height="200" alt="">
+                </li>
+            {% endfor %}
+        </ul>
+        <h3>Список персонажей в комиксе:</h3>
+        {% if comic.characters.items %}
+            <ul>
+                {% for character in comic.characters.items %}
+                    <li>
+                        {{character.name}}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Нет информации</p>
+        {% endif %}
+        <h3>Stories:</h3>
+        <ul>
+            {% for storie in comic.stories.items %}
+                <li>
+                    {{storie.name}}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url "savecomics" comic.id %}"><button>Сохранить</button></a>
+{% endblock content %}

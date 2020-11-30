@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}
+	Поиск комиксов
+{% endblock title %}
+{% block content %}
+	{% if "title" in request.GET %}
+		{% for i in comics %}
+			<ul>
+				<li>
+					<h2>
+						<a href="{% url "detailcomics" i.id %}">{{ i.title }}</a>
+					</h2>
+					<h3>Дата выхода:</h3>
+					<p>{{ i.dates.0.date }}</p>
+					<h3>EAN:</h3>
+					{% if i.ean %}
+						{{ i.ean }}
+					{% else %}
+						<p>Нет информации</p>
+					{% endif %}
+					<h3>Варианты выпуска:</h3>
+					{% if i.variants %}
+						{% for j in i.variants %}
+							<p>{{ j.name }}</p>
+						{% endfor %}
+					{% else %}
+						<p>Нет информации</p>
+					{% endif %}
+					<h3>Обложка:</h3>
+					<img src="{{i.thumbnail.path}}.{{i.thumbnail.extension}}" height="300" alt="">
+				</li>
+			</ul>
+		{% endfor %}
+	{% else %}
+		<form action="." method="get">
+			{{ form.as_p }}
+			<input type="submit" value="Найти">
+		</form>
+	{% endif %}
+{% endblock content %}

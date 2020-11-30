@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+	Комиксы
+{% endblock title %}
+{% block content %}
+	<h1>Комиксы</h1>
+	{% if comics %}
+    	{% for i in comics %}
+			<ul>
+				<li>
+					<h2>
+						<a href="{% url "masterdetailcomic" i.id %}">{{ i.title }}</a>
+					</h2>
+					<h3>Описание:</h3>
+					<p>{{ i.description }}</p>
+					<h3>Обложка:</h3>
+					<img src="{{i.thumbnail.url}}" height="300" alt="">
+				</li>
+			</ul>
+		{% endfor %}
+	{% else %}
+		<p>Избранных комиксов нет</p>
+	{% endif %}
+{% endblock content %}
