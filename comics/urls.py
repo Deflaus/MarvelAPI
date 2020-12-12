@@ -1,13 +1,11 @@
 from django.urls import path
-from .views import marvel, master, detailcomics, savecomics, masterdetailcomic, deletecomic
+from . import views
 from .models import Comics
 
 
 urlpatterns = [
-    path('marvel/', marvel, name='marvel'),
-    path('marvel/<int:id>', detailcomics, name='detailcomics'),
-    path('marvel/<int:id>/save/', savecomics, name='savecomics'),
-    path('master/', master, name='master'),
-    path('master/<int:id>', masterdetailcomic, name='masterdetailcomic'),
-    path('master/<int:id>/delete', deletecomic, name='deletecomic'),
+    path('marvel/', views.SearchComics.as_view(), name='marvel'),
+    path('marvel/<int:id>', views.ViewComics.as_view(), name='marvel-comic'),
+    path('master/', views.ListMasterComics.as_view(), name='master'),
+    path('master/<int:id>', views.MasterComic.as_view(), name='master-comic'),
 ]

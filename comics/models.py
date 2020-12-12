@@ -12,6 +12,7 @@ class Comics(models.Model):
     stories = ArrayField(models.CharField(max_length=200))
 
     class Meta:
+        db_table = 'comics'
         ordering = ('title',)
 
     def __str__(self):

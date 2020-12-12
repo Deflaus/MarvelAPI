@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'comics',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,7 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+MARVEL_PUBLIC_KEY = 'e297bde5dc56d8d61bbd3b7206e17941'
+MARVEL_PRIVATE_KEY = '5a411d1d151c3dffcba8fdb066092f4a7ed56d5c'
