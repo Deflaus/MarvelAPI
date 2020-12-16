@@ -46,5 +46,7 @@
                 </li>
             {% endfor %}
         </ul>
-        <a href="{% url "master-comic" comic.id %}"><button>Удалить из избранного</button></a>
+        <form action="" method="post">
+			<input type="submit" value="Удалить из избранного">
+		</form>
 {% endblock content %}

@@ -1,28 +1,25 @@
 from django.shortcuts import render, redirect
-from .forms import SearchForm
-from marvel.marvel import Marvel
-from django.conf import settings
-from .models import Comic
-from django.core.files import File
-from urllib.request import urlretrieve
 from rest_framework.views import APIView
 
-
-m = Marvel(settings.MARVEL_PUBLIC_KEY, settings.MARVEL_PRIVATE_KEY)
+from .forms import SearchForm
+from .comics_services import get_comics_from_marvel_API_with_given_title, \
+    save_comic_in_bd, get_comic_from_marvel_API_with_given_id, \
+    get_all_comics_from_bd, get_comic_from_bd_with_given_id, \
+    delete_comic_from_bd
 
 
 class SearchComics(APIView):
     def get(self, request):
-        form = SearchForm()
         required_comics = []
+
+        form = SearchForm()
+
         if 'title' in request.GET:
             form = SearchForm(request.GET)
             if form.is_valid():
                 cd = form.cleaned_data
-                comics = m.comics.all()['data']['results']
-                for comic in comics:
-                    if cd['title'] in comic['title']:
-                        required_comics.append(comic)
+                required_comics = get_comics_from_marvel_API_with_given_title(cd['title'])
+
         return render(
             request,
             'search.html',
@@ -33,9 +30,10 @@ class SearchComics(APIView):
         )
 
 
-class ViewComics(APIView):
+class MarvelComic(APIView):
     def get(self, request, id):
-        comic = m.comics.get(id)['data']['results'][0]
+        comic = get_comic_from_marvel_API_with_given_id(id)
+
         return render(
             request,
             'detailcomics.html',
@@ -46,61 +44,17 @@ class ViewComics(APIView):
         )
 
     def post(self, request, id):
-        comic = m.comics.get(id)['data']['results'][0]
-
-        try:
-            Comic.objects.get(title=comic['title'])
-        except Comic.DoesNotExist:
-            extension = comic['thumbnail']['extension']
-            filename = comic['thumbnail']['path'].split('/')[-1]
-            path = comic['thumbnail']['path']
-
-            f = open(urlretrieve(f'{path}.{extension}')[0], 'rb')
-
-            filenames = []
-            fi = []
-            for i in comic['images']:
-                extension = i['extension']
-                filenames.append(i['path'].split('/')[-1])
-                path = i['path']
-
-                fi.append(open(urlretrieve(f'{path}.{extension}')[0], 'rb'))
-
-            com = Comic.objects.create(
-                title=comic['title'],
-                description=comic['description'],
-                datetime_created=comic['dates'][0]['date'],
-                images=[] * len(fi),
-                characters=[i['name'] for i in comic['characters']['items']],
-                stories=[i['name'] for i in comic['stories']['items']],
-            )
-
-            com.thumbnail.save(
-                filename,
-                File(f),
-            )
-
-            for n, i in enumerate(com.images):
-                i.save(
-                    filenames[n],
-                    File(fi[n])
-                )
-
-            com.save()
-
-            f.close()
-            for i in fi:
-                i.close()
+        save_comic_in_bd(id)
 
         return redirect(
-            'detailcomics',
+            'marvel-comic',
             id
         )
 
 
 class ListMasterComics(APIView):
     def get(self, request):
-        comics = Comic.objects.all()
+        comics = get_all_comics_from_bd
         return render(
             request,
             'listcomics.html',
@@ -112,7 +66,8 @@ class ListMasterComics(APIView):
 
 class MasterComic(APIView):
     def get(self, request, id):
-        comic = Comic.objects.get(id=id)
+        comic = get_comic_from_bd_with_given_id(id)
+
         return render(
             request,
             'masterdetailcomics.html',
@@ -122,8 +77,8 @@ class MasterComic(APIView):
         )
 
     def post(self, request, id):
-        comic = Comic.objects.get(id=id)
-        comic.delete()
+        delete_comic_from_bd(id)
+
         return redirect(
             'master',
         )
