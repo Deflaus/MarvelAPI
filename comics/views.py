@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import SearchForm
 from marvel.marvel import Marvel
 from django.conf import settings
-from .models import Comics
+from .models import Comic
 from django.core.files import File
 from urllib.request import urlretrieve
 from rest_framework.views import APIView
@@ -49,8 +49,8 @@ class ViewComics(APIView):
         comic = m.comics.get(id)['data']['results'][0]
 
         try:
-            Comics.objects.get(title=comic['title'])
-        except Comics.DoesNotExist:
+            Comic.objects.get(title=comic['title'])
+        except Comic.DoesNotExist:
             extension = comic['thumbnail']['extension']
             filename = comic['thumbnail']['path'].split('/')[-1]
             path = comic['thumbnail']['path']
@@ -66,7 +66,7 @@ class ViewComics(APIView):
 
                 fi.append(open(urlretrieve(f'{path}.{extension}')[0], 'rb'))
 
-            com = Comics.objects.create(
+            com = Comic.objects.create(
                 title=comic['title'],
                 description=comic['description'],
                 datetime_created=comic['dates'][0]['date'],
@@ -100,7 +100,7 @@ class ViewComics(APIView):
 
 class ListMasterComics(APIView):
     def get(self, request):
-        comics = Comics.objects.all()
+        comics = Comic.objects.all()
         return render(
             request,
             'listcomics.html',
@@ -112,7 +112,7 @@ class ListMasterComics(APIView):
 
 class MasterComic(APIView):
     def get(self, request, id):
-        comic = Comics.objects.get(id=id)
+        comic = Comic.objects.get(id=id)
         return render(
             request,
             'masterdetailcomics.html',
@@ -122,7 +122,7 @@ class MasterComic(APIView):
         )
 
     def post(self, request, id):
-        comic = Comics.objects.get(id=id)
+        comic = Comic.objects.get(id=id)
         comic.delete()
         return redirect(
             'master',

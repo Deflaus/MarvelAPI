@@ -1,15 +1,10 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 
 
-class Comics(models.Model):
+class Comic(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     datetime_created = models.DateTimeField()
-    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True)
-    images = ArrayField(models.ImageField(upload_to='images/'), blank=True, null=True)
-    characters = ArrayField(models.CharField(max_length=200))
-    stories = ArrayField(models.CharField(max_length=200))
 
     class Meta:
         db_table = 'comics'
@@ -17,3 +12,47 @@ class Comics(models.Model):
 
     def __str__(self):
         return f'Комикс {self.title}'
+
+
+class LinkedImage(models.Model):
+    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/', blank=True)
+
+    class Meta:
+        db_table = 'linkedimages'
+
+    def __str__(self):
+        return f'Связанное изображение с комиксом {self.comic}'
+
+
+class Thumbnail(models.Model):
+    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True)
+
+    class Meta:
+        db_table = 'thumbnails'
+
+    def __str__(self):
+        return f'Обложка к комиксу {self.comic}'
+
+
+class Character(models.Model):
+    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'characters'
+
+    def __str__(self):
+        return f'Персонаж {self.name} в комиксе {self.comic}'
+
+
+class Storie(models.Model):
+    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'stories'
+
+    def __str__(self):
+        return f'Storie {self.title} в комиксе {self.comic}'

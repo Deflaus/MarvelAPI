@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .models import Comics
+from .models import Comic
 
 
 urlpatterns = [
