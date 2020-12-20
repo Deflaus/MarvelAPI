@@ -11,13 +11,16 @@
 					<h2>
 						<a href="{% url "master-comic" i.id %}">{{ i.title }}</a>
 					</h2>
+
 					<h3>Описание:</h3>
 					<p>{{ i.description }}</p>
-					<h3>Обложка:</h3>
-					<img src="{{i.thumbnail.url}}" height="300" alt="">
+
+					<h3>Дата выхода:</h3>
+					<p>{{ comic.datetime_created }}</p>
 				</li>
 			</ul>
 		{% endfor %}
+		{% include "comics/listcomics_pagination.html" with page=comics %}
 	{% else %}
 		<p>Избранных комиксов нет</p>
 	{% endif %}

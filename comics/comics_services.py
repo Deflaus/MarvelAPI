@@ -32,15 +32,11 @@ def get_comic_from_marvel_API_with_given_id(id):
     return m.comics.get(id)['data']['results'][0]
 
 
-'''Получить комикс с базы данных по его названию'''
-def get_comic_from_bd_with_given_title(title):
-    return Comic.objects.filter(title=title)
-
-
 '''Сохранить комикс в базу данных'''
-def save_comic_in_bd(comic_from_marvel_API_id):
+def save_comic_in_bd(user, comic_from_marvel_API_id):
     comic_from_marvel_API = get_comic_from_marvel_API_with_given_id(comic_from_marvel_API_id)
     comic_from_bd = Comic.objects.create(
+        user=user,
         title=comic_from_marvel_API['title'],
         description=comic_from_marvel_API['description'],
         datetime_created=comic_from_marvel_API['dates'][0]['date'],
@@ -91,20 +87,36 @@ def _save_storie_in_bd(comic, title):
 
 
 '''Получить все комиксы из базы данных'''
-def get_all_comics_from_bd():
-    return Comic.objects.all()
+def get_all_comics_from_bd(user):
+    return Comic.objects.filter(user=user)
 
 
 '''Получить комикс из базы данных по его id'''
-def get_comic_from_bd_with_given_id(id):
-    return Comic.objects.filter(id=id)
+def get_comic_from_bd_with_given_id(user, id):
+    return Comic.objects.filter(user=user, id=id)
 
 
 '''Удалить комикс из базы данных по его id'''
-def delete_comic_from_bd(id):
-    comic = get_comic_from_bd_with_given_id(id)
+def delete_comic_from_bd(user, id):
+    comic = get_comic_from_bd_with_given_id(user, id)
     comic.delete()
 
 
-def get_thumbnail_from_bd(comic):
+'''Получить список обложек из базы данных по их комиксу'''
+def get_thumbnail_from_bd_with_given_comic(comic):
     return Thumbnail.objects.filter(comic=comic)
+
+
+'''Получить список связанных изображений из базы данных по их комиксу'''
+def get_linked_images_from_bd_with_given_comic(comic):
+    return LinkedImage.objects.filter(comic=comic)
+
+
+'''Получить список персонажей из базы данных по их комиксу'''
+def get_characters_from_bd_with_given_comic(comic):
+    return Character.objects.filter(comic=comic)
+
+
+'''Получить Stories из базы данных по их комиксу'''
+def get_stories_from_bd_with_given_comic(comic):
+    return Storie.objects.filter(comic=comic)

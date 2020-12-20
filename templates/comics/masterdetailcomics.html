@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ comic.title }}
+{% endblock title %}
+{% block content %}
+        <h1>{{ comic.title }}</h1>
+
+        <h3>Дата выхода:</h3>
+        <p>{{ comic.datetime_created }}</p>
+
+        <h3>Описание:</h3>
+        {{ comic.description }}
+
+        <h3>Обложка:</h3>
+        <img src="{{ thumbnail.0.thumbnail.url }}" height="300" alt="">
+
+        <h3>Изображения:</h3>
+        <ul>
+            {% for image in linkedimages %}
+                <li>
+                    <img src="{{ image.image.url }}" height="200" alt="">
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Список персонажей в комиксе:</h3>
+        <ul>
+            {% for character in characters %}
+                <li>
+                    {{ character.name }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Stories:</h3>
+        <ul>
+            {% for storie in comic.stories %}
+                <li>
+                    {{ storie.title }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <form action="" method="post">
+			<input type="submit" value="Удалить из избранного">
+		</form>
+{% endblock content %}

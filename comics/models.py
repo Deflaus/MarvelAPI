@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Comic(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=User.objects.get(username='daniil').pk)
     title = models.CharField(max_length=200)
     description = models.TextField()
     datetime_created = models.DateTimeField()

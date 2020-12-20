@@ -31,6 +31,7 @@
 				</li>
 			</ul>
 		{% endfor %}
+		{% include "comics/search_pagination.html" with page=comics title=search_title %}
 	{% else %}
 		<form action="." method="get">
 			{{ form.as_p }}
